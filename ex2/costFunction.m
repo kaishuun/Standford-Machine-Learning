@@ -20,9 +20,15 @@ grad = zeros(size(theta));
 % Note: grad should have the same dimensions as theta
 %
 
+%Calculates J(theta)
+for i = 1:m
+   J = J + -y(i)*log(sigmoid(dot(theta,X(i,:)))) - (1-y(i))*log(1- sigmoid(dot(theta,X(i,:))));
+end
+
+J = J/m;
 
 
-
+grad = X' * (sigmoid(X * theta)- y) *1/m;
 
 
 
