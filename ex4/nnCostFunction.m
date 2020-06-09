@@ -61,16 +61,53 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
+Y = zeros(size(y,1),num_labels);
+for i = 1:m
+    Y(i,y(i)) = 1;
+end
 
 
+%cost function    
+a1 = [ones(size(X,1),1) X];
+z2 = sigmoid(a1 * Theta1');
+a2 = [ones(size(z2,1),1) z2];
+z3 = sigmoid(a2 *Theta2');
 
+J = sum(sum((-Y .* log(z3) - (1-Y) .* log(1-z3))));
 
+J = J/m;
 
+%regularized cost function
+theta1 = Theta1(:,2:size(Theta1,2));
+theta2 = Theta2(:,2:size(Theta2,2));
+reg = lambda/(2*m)*(sum(sum(theta1.^2)) + sum(sum(theta2.^2)));
+J = J + reg;
 
+Delta1 = 0;
+Delta2 = 0;
+%back propagation with gradients
 
+for t = 1:m
+    a1 = [1 ;X(t,:)'];
+    z2 = Theta1 * a1; 
+    a2 = [1; sigmoid(z2)];
+    z3 = Theta2 * a2;
+    a3 = sigmoid(z3);
+    
+    d3 = (a3 - Y(t,:)');
+    d2 = (theta2' * d3) .* sigmoidGradient(z2);
+    
+    Delta2 = Delta2 + (d3*a2');
+    Delta1 = Delta1 + (d2*a1');
+	
+end
 
+Theta1_grad = 1/m*Delta1;
+Theta2_grad = 1/m*Delta2;
 
-
+Theta1_grad(:,2:end) = Theta1_grad(:,2:end) + lambda/m * theta1;
+Theta2_grad(:,2:end) = Theta2_grad(:,2:end) + lambda/m * theta2;
+grad = [Theta1_grad(:); Theta2_grad(:)];
 
 
 
