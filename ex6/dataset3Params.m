@@ -23,6 +23,27 @@ sigma = 0.3;
 %        mean(double(predictions ~= yval))
 %
 
+score = Inf;
+values = [0.01, 0.02, 0.04, 0.08, 0.16, 0.32, 0.64, 1.28, 2.56];
+
+
+for i = values
+    for j = values
+        model = svmTrain(X,y,i,@(x1,x2)gaussianKernel(x1,x2,j));
+        predictions  = svmPredict(model,Xval);
+        
+        error = mean(double(predictions ~= yval));
+        
+        if error < score
+            score = error;
+            C = i;
+            sigma = j;
+        end
+        
+        
+    end
+end
+
 
 
 
