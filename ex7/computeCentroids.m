@@ -28,6 +28,20 @@ centroids = zeros(K, n);
 
 
 
+for i = 1:K
+    %filters to find the centroid
+    found = find(idx == i);
+    length = size(found,1);
+    
+    
+    filter = X(found,:);
+    %computes an average and finds new centroid location
+    avg = sum(filter) ./ length;
+    centroids(i,:) = avg;
+    
+end
+
+
 
 
 
